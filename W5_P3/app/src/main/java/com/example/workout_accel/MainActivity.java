@@ -2,6 +2,7 @@ package com.example.workout_accel;
 
 import android.content.Context;
 //import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -47,31 +48,43 @@ public class MainActivity extends AppCompatActivity {
     private TextView step_count;
 
     // value used to determine whether user shook the device "significantly"
-    private static int SIGNIFICANT_SHAKE = 100;   //tweak this as necessary
+    private static int SIGNIFICANT_SHAKE_EASY = 500;   //tweak this as necessary
+    private static int SIGNIFICANT_SHAKE_MED = 1000;   //tweak this as necessary
+    private static int SIGNIFICANT_SHAKE_HARD = 2000;   //tweak this as necessary
     private CameraManager CamManager;
     private String CamID;
     private DecimalFormat df;
 
     private String choose_workout;
+    private int count = 0;
+    boolean programon = false;
+
+    long millis;
+    int seconds;
+    int minutes;
+    int hours;
+
+    MediaPlayer mp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        disableAccelerometerListening();
         start_btn = (Button) findViewById(R.id.start_btn);
         stop_btn = (Button) findViewById(R.id.stop_btn);
         step_count = (TextView) findViewById(R.id.step_count);
 
-        ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.activity_main, workouts);
+        //ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.activity_main, workout_types);
 
         ListView list_shake = (ListView) findViewById(R.id.list_shake);
-        list_shake.setAdapter(adapter);
+        //list_shake.setAdapter(adapter);
 
         final String[] workout_types = {"Easy","Medium","Hard"}; //Raw Data, array of strings to put into our ListAdapter.
         //ArrayAdapter is the interface, the go between, between UI and Data
         ArrayAdapter ListAdapter = new ArrayAdapter<String>(MainActivity.this,           //Context
-                android.R.layout.simple_list_item_1, //type of list (simple)
+                android.R.layout.simple_list_item_activated_1, //type of list (simple)
                 workout_types);                            //Data for the list
         //We will see much more complex Adapters as we go.
 //3. ListViews work (display items) by binding themselves to an adapter.
@@ -82,19 +95,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String getworkout;
-                //  Animal = Animals[position];  //Note, This is much simpler,
-                //Q (for above): Why is referring to the original array less preferable then using CallBack Parms (below)? A: _____________
+
                 getworkout = String.valueOf(parent.getItemAtPosition(position));  //Parent refers to the parent of the item, the ListView.  position is the index of the item clicked.
                 if (getworkout == "Easy") {
                     choose_workout = getworkout;
-                    //list_shake = MediaPlayer.create(MainActivity.this, R.raw.cowmooing);
-                    //mp.start();
                 } else if (getworkout == "Medium") {
-                    //mp = MediaPlayer.create(MainActivity.this, R.raw.dog);
-                    //mp.start();
+                    choose_workout = getworkout;
                 } else if (getworkout == "Hard") {
-                    //mp = MediaPlayer.create(MainActivity.this, R.raw.monkey);
-                    // mp.start();
+                    choose_workout = getworkout;
                 }
 
                 //Toast.makeText(MainActivity.this, "You Clicked on " + , Toast.LENGTH_LONG).show();
@@ -118,16 +126,149 @@ public class MainActivity extends AppCompatActivity {
                 currentAcceleration = SensorManager.GRAVITY_EARTH;            //We live on Earth.
                 lastAcceleration = SensorManager.GRAVITY_EARTH;               //Ctrl-Click to see where else we could use our phone.
 
-//
-                //     setHasOptionsMenu(true);   //this lets the compiler know there are menu item
-    });
+            }
+        });
+        start_btn.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onClick(View view) {
+                count = 0;
+                run();
+                if (choose_workout == "Easy"){
+                    start_btn.setEnabled(false);
+                    list_shake.setEnabled(false);
+                    enableAccelerometerListening();
+                    programon = true;
+                    System.out.println(count);
+                    while (programon == true){
+                        step_count.setText(String.valueOf(count));
+                        if (count == 20){
+                            while (count > 20 && count < 101) {
+                                LightOn();
+                                LightOff();
+                            }
+                        }
+                        else if (count == 30){
+                            mp = MediaPlayer.create(MainActivity.this, R.raw.superman);
+                            mp.start();
+                        }
+                        else if (count >= 100){
+                            Toast.makeText(getApplicationContext(), String.format("%d:%02d:%02d", hours, minutes, seconds), Toast.LENGTH_LONG).show();
+                            disableAccelerometerListening();
+                            mp.stop();
+                            programon = false;
+                            start_btn.setEnabled(true);
+                            list_shake.setEnabled(true);
+                        }
+                    }
+                }
+                else if(choose_workout == "Medium"){
+                    start_btn.setEnabled(false);
+                    list_shake.setEnabled(false);
+                    enableAccelerometerListening();
+                    programon = true;
+                    while (programon == true) {
+                        step_count.setText(count + "Steps");
+                        if (count >= 40) {
+                            while (count > 40 && count < 101) {
+                                LightOn();
+                                LightOff();
+                            }
+                        }
+                        else if (count == 45) {
+                            mp = MediaPlayer.create(MainActivity.this, R.raw.chariots_of_fire);
+                            mp.start();
+                        }
+                        else if (count >= 100){
+                            Toast.makeText(getApplicationContext(), String.format("%d:%02d:%02d", hours, minutes, seconds), Toast.LENGTH_LONG).show();
+                            disableAccelerometerListening();
+                            mp.stop();
+                            programon = false;
+                            start_btn.setEnabled(true);
+                            list_shake.setEnabled(true);
+                        }
+                    }
+                }
+                else if(choose_workout == "Hard"){
+                    start_btn.setEnabled(false);
+                    list_shake.setEnabled(false);
+                    programon = true;
+                    while (programon == true) {
+                        step_count.setText(count + "Steps");
+                        if (count == 40) {
+                            while (count > 40 && count < 101) {
+                                LightOn();
+                                LightOff();
+                            }
+                        }
+                        else if (count == 60) {
+                            mp = MediaPlayer.create(MainActivity.this, R.raw.rocky);
+                            mp.start();
+                        }
+                        else if (count >= 100){
+                            Toast.makeText(getApplicationContext(), String.format("%d:%02d:%02d", hours, minutes, seconds), Toast.LENGTH_LONG).show();
+                            disableAccelerometerListening();
+                            mp.stop();
+                            programon = false;
+                            start_btn.setEnabled(true);
+                            list_shake.setEnabled(true);
+                        }
+                    }
+                }
+            }
+        });
+        stop_btn.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onClick(View view) {
+                disableAccelerometerListening();
+                LightOff();
+                mp.stop();
+                programon = false;
+                start_btn.setEnabled(true);
+                list_shake.setEnabled(true);
+            }
+        });
+    }
+
 
     @Override
     protected void onStart() {
         super.onStart();
         Log.i(TAG, "onStart Triggered.");
-        enableAccelerometerListening();
     }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        int savedcounter = savedInstanceState.getInt("counter");
+        count = savedcounter;
+        boolean programstatus = savedInstanceState.getBoolean("Programstate");
+        programon = programstatus;
+        String workouttype = savedInstanceState.getString("Workout");
+        choose_workout = workouttype;
+        int timemillis = savedInstanceState.getInt("Millis");
+        millis = timemillis;
+        int timeseconds = savedInstanceState.getInt("Seconds");
+        seconds = timeseconds;
+        int timeminutes = savedInstanceState.getInt("Minutes");
+        minutes = timeminutes;
+        int timehours = savedInstanceState.getInt("Hours");
+        hours = timehours;
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("counter", count);
+        outState.putBoolean("Programstate", programon);
+        outState.putString("Workout", choose_workout);
+        outState.putLong("Millis", millis);
+        outState.putInt("Seconds", seconds);
+        outState.putInt("Minutes", minutes);
+        outState.putInt("Hours", hours);
+    }
+
 
     @Override
     protected void onStop() {
@@ -195,7 +336,7 @@ public class MainActivity extends AppCompatActivity {
             acceleration = currentAcceleration *  (currentAcceleration - lastAcceleration);
 
             // if the acceleration is above a certain threshold
-            if (acceleration > SIGNIFICANT_SHAKE) {
+            if (acceleration > SIGNIFICANT_SHAKE_EASY) {
                 Log.e(TAG, "delta x = " + (x-lastX));
                 Log.e(TAG, "delta y = " + (y-lastY));
                 Log.e(TAG, "delta z = " + (z-lastZ));
@@ -209,11 +350,44 @@ public class MainActivity extends AppCompatActivity {
 //                    tvDeltaX.setText(df.format(x));
 //                    tvDeltaY.setText(df.format(y));
 //                    tvDeltaZ.setText(df.format(z-9.8));
+                count++;
+            }
+            else if(acceleration > SIGNIFICANT_SHAKE_MED) {
+                Log.e(TAG, "delta x = " + (x-lastX));
+                Log.e(TAG, "delta y = " + (y-lastY));
+                Log.e(TAG, "delta z = " + (z-lastZ));
+                Toast.makeText(getBaseContext(), "SIGNIFICANT SHAKE!", Toast.LENGTH_SHORT).show();
+
+
+                //tvDeltaX.setText(df.format(x-lastX));
+                ///tvDeltaY.setText(df.format(y-lastY));
+                //tvDeltaZ.setText(df.format(z-lastZ));
+
+//                    tvDeltaX.setText(df.format(x));
+//                    tvDeltaY.setText(df.format(y));
+//                    tvDeltaZ.setText(df.format(z-9.8));
+                count++;
+            }
+            else if (acceleration > SIGNIFICANT_SHAKE_HARD) {
+                Log.e(TAG, "delta x = " + (x-lastX));
+                Log.e(TAG, "delta y = " + (y-lastY));
+                Log.e(TAG, "delta z = " + (z-lastZ));
+                Toast.makeText(getBaseContext(), "SIGNIFICANT SHAKE!", Toast.LENGTH_SHORT).show();
+
+
+                //tvDeltaX.setText(df.format(x-lastX));
+                ///tvDeltaY.setText(df.format(y-lastY));
+                //tvDeltaZ.setText(df.format(z-lastZ));
+
+//                    tvDeltaX.setText(df.format(x));
+//                    tvDeltaY.setText(df.format(y));
+//                    tvDeltaZ.setText(df.format(z-9.8));
+                count++;
             }
             else
 //                    Toast.makeText(getBaseContext(), "NOT A SIGNIFICANT SHAKE!", Toast.LENGTH_LONG).show();
 
-                lastX = x;
+            lastX = x;
             lastY = y;
             lastZ = z;
         }
@@ -274,7 +448,14 @@ public class MainActivity extends AppCompatActivity {
 //        }
 //        return super.onOptionsItemSelected(item);
 //    }
-
+    private void run () {
+        millis = System.currentTimeMillis() - 0;
+        seconds = (int) (millis / 1000);
+        minutes = seconds / 60;
+        hours = minutes / 60;
+        seconds = seconds % 60;
+        minutes = minutes % 60;
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void LightOn()
