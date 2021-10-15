@@ -133,89 +133,89 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 count = 0;
+                start_btn.setEnabled(false);
+                list_shake.setEnabled(false);
+                programon = true;
                 run();
-                if (choose_workout == "Easy"){
-                    start_btn.setEnabled(false);
-                    list_shake.setEnabled(false);
-                    enableAccelerometerListening();
-                    programon = true;
-                    System.out.println(count);
-                    while (programon == true){
-                        step_count.setText(String.valueOf(count));
-                        if (count == 20){
-                            while (count > 20 && count < 101) {
-                                LightOn();
-                                LightOff();
-                            }
-                        }
-                        else if (count == 30){
-                            mp = MediaPlayer.create(MainActivity.this, R.raw.superman);
-                            mp.start();
-                        }
-                        else if (count >= 100){
-                            Toast.makeText(getApplicationContext(), String.format("%d:%02d:%02d", hours, minutes, seconds), Toast.LENGTH_LONG).show();
-                            disableAccelerometerListening();
-                            mp.stop();
-                            programon = false;
-                            start_btn.setEnabled(true);
-                            list_shake.setEnabled(true);
-                        }
-                    }
+                enableAccelerometerListening();
+                //if (choose_workout == "Easy"){
+
+                    //System.out.println(count);
+                    //while (programon == true){
+//                        step_count.setText(String.valueOf(count));
+//                        if (count == 20){
+//                            while (count > 20 && count < 101) {
+//                                LightOn();
+//                                LightOff();
+//                            }
+//                        }
+//                        else if (count == 30){
+//                            mp = MediaPlayer.create(MainActivity.this, R.raw.superman);
+//                            mp.start();
+//                        }
+//                        else if (count >= 100){
+//                            Toast.makeText(getApplicationContext(), String.format("%d:%02d:%02d", hours, minutes, seconds), Toast.LENGTH_LONG).show();
+//                            disableAccelerometerListening();
+//                            mp.stop();
+//                            programon = false;
+//                            start_btn.setEnabled(true);
+//                            list_shake.setEnabled(true);
+//                        }
+                    //}
+                //}
+//                else if(choose_workout == "Medium"){
+//                    start_btn.setEnabled(false);
+//                    list_shake.setEnabled(false);
+//                    programon = true;
+                    //while (programon == true) {
+//                        step_count.setText(count + "Steps");
+//                        if (count >= 40) {
+//                            while (count > 40 && count < 101) {
+//                                LightOn();
+//                                LightOff();
+//                            }
+//                        }
+//                        else if (count == 45) {
+//                            mp = MediaPlayer.create(MainActivity.this, R.raw.chariots_of_fire);
+//                            mp.start();
+//                        }
+//                        else if (count >= 100){
+//                            Toast.makeText(getApplicationContext(), String.format("%d:%02d:%02d", hours, minutes, seconds), Toast.LENGTH_LONG).show();
+//                            disableAccelerometerListening();
+//                            mp.stop();
+//                            programon = false;
+//                            start_btn.setEnabled(true);
+//                            list_shake.setEnabled(true);
+//                        }
+                    //}
+//                }
+//                else if(choose_workout == "Hard"){
+//                    start_btn.setEnabled(false);
+//                    list_shake.setEnabled(false);
+//                    programon = true;
+//                    while (programon == true) {
+//                        step_count.setText(count + "Steps");
+//                        if (count == 40) {
+//                            while (count > 40 && count < 101) {
+//                                LightOn();
+//                                LightOff();
+//                            }
+//                        }
+//                        else if (count == 60) {
+//                            mp = MediaPlayer.create(MainActivity.this, R.raw.rocky);
+//                            mp.start();
+//                        }
+//                        else if (count >= 100){
+//                            Toast.makeText(getApplicationContext(), String.format("%d:%02d:%02d", hours, minutes, seconds), Toast.LENGTH_LONG).show();
+//                            disableAccelerometerListening();
+//                            mp.stop();
+//                            programon = false;
+//                            start_btn.setEnabled(true);
+//                            list_shake.setEnabled(true);
+//                        }
+//                    }
                 }
-                else if(choose_workout == "Medium"){
-                    start_btn.setEnabled(false);
-                    list_shake.setEnabled(false);
-                    enableAccelerometerListening();
-                    programon = true;
-                    while (programon == true) {
-                        step_count.setText(count + "Steps");
-                        if (count >= 40) {
-                            while (count > 40 && count < 101) {
-                                LightOn();
-                                LightOff();
-                            }
-                        }
-                        else if (count == 45) {
-                            mp = MediaPlayer.create(MainActivity.this, R.raw.chariots_of_fire);
-                            mp.start();
-                        }
-                        else if (count >= 100){
-                            Toast.makeText(getApplicationContext(), String.format("%d:%02d:%02d", hours, minutes, seconds), Toast.LENGTH_LONG).show();
-                            disableAccelerometerListening();
-                            mp.stop();
-                            programon = false;
-                            start_btn.setEnabled(true);
-                            list_shake.setEnabled(true);
-                        }
-                    }
-                }
-                else if(choose_workout == "Hard"){
-                    start_btn.setEnabled(false);
-                    list_shake.setEnabled(false);
-                    programon = true;
-                    while (programon == true) {
-                        step_count.setText(count + "Steps");
-                        if (count == 40) {
-                            while (count > 40 && count < 101) {
-                                LightOn();
-                                LightOff();
-                            }
-                        }
-                        else if (count == 60) {
-                            mp = MediaPlayer.create(MainActivity.this, R.raw.rocky);
-                            mp.start();
-                        }
-                        else if (count >= 100){
-                            Toast.makeText(getApplicationContext(), String.format("%d:%02d:%02d", hours, minutes, seconds), Toast.LENGTH_LONG).show();
-                            disableAccelerometerListening();
-                            mp.stop();
-                            programon = false;
-                            start_btn.setEnabled(true);
-                            list_shake.setEnabled(true);
-                        }
-                    }
-                }
-            }
+           //}
         });
         stop_btn.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.M)
@@ -314,6 +314,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private final SensorEventListener sensorEventListener = new SensorEventListener() {
+        @RequiresApi(api = Build.VERSION_CODES.M)
         @Override
         public void onSensorChanged(SensorEvent event) {
             // get x, y, and z values for the SensorEvent
@@ -336,53 +337,89 @@ public class MainActivity extends AppCompatActivity {
             acceleration = currentAcceleration *  (currentAcceleration - lastAcceleration);
 
             // if the acceleration is above a certain threshold
-            if (acceleration > SIGNIFICANT_SHAKE_EASY) {
-                Log.e(TAG, "delta x = " + (x-lastX));
-                Log.e(TAG, "delta y = " + (y-lastY));
-                Log.e(TAG, "delta z = " + (z-lastZ));
-                Toast.makeText(getBaseContext(), "SIGNIFICANT SHAKE!", Toast.LENGTH_SHORT).show();
+            if (choose_workout == "Easy") {
+                if (acceleration > SIGNIFICANT_SHAKE_EASY) {
+                    Log.e(TAG, "delta x = " + (x - lastX));
+                    Log.e(TAG, "delta y = " + (y - lastY));
+                    Log.e(TAG, "delta z = " + (z - lastZ));
+                    Toast.makeText(getBaseContext(), "SIGNIFICANT SHAKE!", Toast.LENGTH_SHORT).show();
 
-
-                //tvDeltaX.setText(df.format(x-lastX));
-                ///tvDeltaY.setText(df.format(y-lastY));
-                //tvDeltaZ.setText(df.format(z-lastZ));
-
-//                    tvDeltaX.setText(df.format(x));
-//                    tvDeltaY.setText(df.format(y));
-//                    tvDeltaZ.setText(df.format(z-9.8));
-                count++;
+                    count++;
+                }
+                step_count.setText(String.valueOf(count));
+                if (count == 20){
+                    while (count > 20 && count < 101) {
+                        LightOn();
+                        LightOff();
+                    }
+                }
+                else if (count == 30){
+                    mp = MediaPlayer.create(MainActivity.this, R.raw.superman);
+                    mp.start();
+                }
+                else if (count >= 100){
+                    Toast.makeText(getApplicationContext(), String.format("%d:%02d:%02d", hours, minutes, seconds), Toast.LENGTH_LONG).show();
+                    disableAccelerometerListening();
+                    mp.stop();
+                    programon = false;
+                    start_btn.setEnabled(true);
+                    list_shake.setEnabled(true);
+                }
             }
-            else if(acceleration > SIGNIFICANT_SHAKE_MED) {
-                Log.e(TAG, "delta x = " + (x-lastX));
-                Log.e(TAG, "delta y = " + (y-lastY));
-                Log.e(TAG, "delta z = " + (z-lastZ));
-                Toast.makeText(getBaseContext(), "SIGNIFICANT SHAKE!", Toast.LENGTH_SHORT).show();
+            else if (choose_workout == "Medium") {
+                if(acceleration > SIGNIFICANT_SHAKE_MED) {
+                    Log.e(TAG, "delta x = " + (x - lastX));
+                    Log.e(TAG, "delta y = " + (y - lastY));
+                    Log.e(TAG, "delta z = " + (z - lastZ));
+                    Toast.makeText(getBaseContext(), "SIGNIFICANT SHAKE!", Toast.LENGTH_SHORT).show();
 
-
-                //tvDeltaX.setText(df.format(x-lastX));
-                ///tvDeltaY.setText(df.format(y-lastY));
-                //tvDeltaZ.setText(df.format(z-lastZ));
-
-//                    tvDeltaX.setText(df.format(x));
-//                    tvDeltaY.setText(df.format(y));
-//                    tvDeltaZ.setText(df.format(z-9.8));
-                count++;
+                    count++;
+                }
+                step_count.setText(count + "Steps");
+                if (count >= 40) {
+                    while (count > 40 && count < 101) {
+                        LightOn();
+                        LightOff();
+                    }
+                }
+                else if (count == 45) {
+                    mp = MediaPlayer.create(MainActivity.this, R.raw.chariots_of_fire);
+                    mp.start();
+                }
+                else if (count >= 100){
+                    Toast.makeText(getApplicationContext(), String.format("%d:%02d:%02d", hours, minutes, seconds), Toast.LENGTH_LONG).show();
+                    disableAccelerometerListening();
+                    mp.stop();
+                    programon = false;
+                    start_btn.setEnabled(true);
+                    list_shake.setEnabled(true);
+                }
             }
-            else if (acceleration > SIGNIFICANT_SHAKE_HARD) {
-                Log.e(TAG, "delta x = " + (x-lastX));
-                Log.e(TAG, "delta y = " + (y-lastY));
-                Log.e(TAG, "delta z = " + (z-lastZ));
-                Toast.makeText(getBaseContext(), "SIGNIFICANT SHAKE!", Toast.LENGTH_SHORT).show();
+            else if (choose_workout == "Hard") {
+                if (acceleration > SIGNIFICANT_SHAKE_HARD) {
+                    Log.e(TAG, "delta x = " + (x - lastX));
+                    Log.e(TAG, "delta y = " + (y - lastY));
+                    Log.e(TAG, "delta z = " + (z - lastZ));
+                    Toast.makeText(getBaseContext(), "SIGNIFICANT SHAKE!", Toast.LENGTH_SHORT).show();
 
-
-                //tvDeltaX.setText(df.format(x-lastX));
-                ///tvDeltaY.setText(df.format(y-lastY));
-                //tvDeltaZ.setText(df.format(z-lastZ));
-
-//                    tvDeltaX.setText(df.format(x));
-//                    tvDeltaY.setText(df.format(y));
-//                    tvDeltaZ.setText(df.format(z-9.8));
-                count++;
+                    count++;
+                }
+                if (count == 40) {
+                    while (count > 40 && count < 101) {
+                        LightOn();
+                        LightOff();
+                    }
+                } else if (count == 60) {
+                    mp = MediaPlayer.create(MainActivity.this, R.raw.rocky);
+                    mp.start();
+                } else if (count >= 100) {
+                    Toast.makeText(getApplicationContext(), String.format("%d:%02d:%02d", hours, minutes, seconds), Toast.LENGTH_LONG).show();
+                    disableAccelerometerListening();
+                    mp.stop();
+                    programon = false;
+                    start_btn.setEnabled(true);
+                    list_shake.setEnabled(true);
+                }
             }
             else
 //                    Toast.makeText(getBaseContext(), "NOT A SIGNIFICANT SHAKE!", Toast.LENGTH_LONG).show();
