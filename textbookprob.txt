@@ -10,11 +10,25 @@ Multiple Choice
 
 Short Answer
 
-7.18 - 
-protected void onCreate( Bundle savedInstanceState ){
-   super.onCreate( savedInstanceState );
-   // Your code goes here
-   
+18.  We are coding inside the onCreate method of an Activity class. Write the code so that the current Activity will handle the gestures and tap events.
+					
+protected void onCreate( Bundle savedInstanceState ){				
+  super.onCreate( savedInstanceState );				
+  // Your code goes here
+
+   setContentView(R.layout.activity_main);
+   detector = new GestureDetecter(this, this);
+   detector.setOnDoubleTapListener(this);
 
 }
+
+19.We are coding inside the onTouchEvent method of an Activity class. Write the code so that if there is a gesture event, it gets dispatched to the appropriate method of GestureDetector.OnGestureListener.
+
+		 	 	 							
+public boolean onTouchEvent( MotionEven event ){			
+ // Your code goes here
+   this.detector.onTouchEvent(event);
+   return super.onTouchEvent(event);
+}
+
 
