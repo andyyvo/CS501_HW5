@@ -1,0 +1,20 @@
+Multiple Choice
+
+7.1 - setOnTouchListener
+7.2 - getAction
+7.3 - bringToFront
+7.4 - GestureDetector
+7.5 - Public static inner interfaces of GestureDetector
+7.6 - Private Methods
+7.7 - onTouchEvent
+
+Short Answer
+
+7.18 - 
+protected void onCreate( Bundle savedInstanceState ){
+   super.onCreate( savedInstanceState );
+   // Your code goes here
+   
+
+}
+
