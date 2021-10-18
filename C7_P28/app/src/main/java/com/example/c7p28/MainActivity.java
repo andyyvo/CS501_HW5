@@ -16,6 +16,7 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
     private TextView message;
     private GestureDetector mDetector;
+    Random random = new Random();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,16 +71,17 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     @Override
     public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float xCoord, float yCoord) {
 
-//        DisplayMetrics displaymetrics = new DisplayMetrics();
-//        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-
+        // use Point and then getSize to get the screen size dimensions in pixels
         Point point = new Point();
         getWindowManager().getDefaultDisplay().getSize(point);
+        int displayWidth = point.x;
+        int displayHeight = point.y;
 
+        // Create new random parameters if user flings too hard
         if (Math.abs(xCoord) > 10000 || Math.abs(yCoord) > 10000) {
 
-            float dx = (float) Math.random() * point.x * 8 / 10;
-            float dy = (float) Math.random() * point.y * 8 / 10;
+            float dx = (float) random.nextInt(displayWidth) * 7/8;
+            float dy = (float) random.nextInt(displayHeight) * 4/5;
 //            float dx = R.nextFloat() * displaymetrics.widthPixels * 8/10;
 //            float dy = R.nextFloat() * displaymetrics.heightPixels * 8/10;
 
