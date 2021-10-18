@@ -1,11 +1,14 @@
 package com.example.workout_accel;
 
+import android.Manifest;
 import android.content.Context;
 //import android.support.v7.app.AppCompatActivity;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.content.pm.PackageManager;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
 import android.media.MediaPlayer;
@@ -18,6 +21,8 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
+import android.os.Handler;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -63,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
     int seconds;
     int minutes;
     int hours;
+    long startTime;
+    long endTime;
 
     MediaPlayer mp;
 
@@ -76,9 +83,7 @@ public class MainActivity extends AppCompatActivity {
         stop_btn = (Button) findViewById(R.id.stop_btn);
         step_count = (TextView) findViewById(R.id.step_count);
 
-        //ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.activity_main, workout_types);
-
-        ListView list_shake = (ListView) findViewById(R.id.list_shake);
+        list_shake = (ListView) findViewById(R.id.list_shake);
         //list_shake.setAdapter(adapter);
 
         final String[] workout_types = {"Easy","Medium","Hard"}; //Raw Data, array of strings to put into our ListAdapter.
@@ -86,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter ListAdapter = new ArrayAdapter<String>(MainActivity.this,           //Context
                 android.R.layout.simple_list_item_activated_1, //type of list (simple)
                 workout_types);                            //Data for the list
-        //We will see much more complex Adapters as we go.
+
 //3. ListViews work (display items) by binding themselves to an adapter.
         list_shake.setAdapter(ListAdapter);    //Let's put some things in our simple listview by binding it to our adaptor.
 
@@ -99,16 +104,15 @@ public class MainActivity extends AppCompatActivity {
                 getworkout = String.valueOf(parent.getItemAtPosition(position));  //Parent refers to the parent of the item, the ListView.  position is the index of the item clicked.
                 if (getworkout == "Easy") {
                     choose_workout = getworkout;
+                    mp = MediaPlayer.create(MainActivity.this, R.raw.superman);
                 } else if (getworkout == "Medium") {
                     choose_workout = getworkout;
+                    mp = MediaPlayer.create(MainActivity.this, R.raw.chariots_of_fire);
                 } else if (getworkout == "Hard") {
                     choose_workout = getworkout;
+                    mp = MediaPlayer.create(MainActivity.this, R.raw.rocky);
                 }
 
-                //Toast.makeText(MainActivity.this, "You Clicked on " + , Toast.LENGTH_LONG).show();
-                //df = new DecimalFormat("0.00");
-
-                //flash
 
                 CamManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
                 try {
@@ -117,8 +121,6 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-
-                //flash
 
 
                 // initialize acceleration values
@@ -133,97 +135,21 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 count = 0;
+                startTime = System.currentTimeMillis();
+                System.out.println(startTime);
                 start_btn.setEnabled(false);
                 list_shake.setEnabled(false);
                 programon = true;
-                run();
                 enableAccelerometerListening();
-                //if (choose_workout == "Easy"){
-
-                    //System.out.println(count);
-                    //while (programon == true){
-//                        step_count.setText(String.valueOf(count));
-//                        if (count == 20){
-//                            while (count > 20 && count < 101) {
-//                                LightOn();
-//                                LightOff();
-//                            }
-//                        }
-//                        else if (count == 30){
-//                            mp = MediaPlayer.create(MainActivity.this, R.raw.superman);
-//                            mp.start();
-//                        }
-//                        else if (count >= 100){
-//                            Toast.makeText(getApplicationContext(), String.format("%d:%02d:%02d", hours, minutes, seconds), Toast.LENGTH_LONG).show();
-//                            disableAccelerometerListening();
-//                            mp.stop();
-//                            programon = false;
-//                            start_btn.setEnabled(true);
-//                            list_shake.setEnabled(true);
-//                        }
-                    //}
-                //}
-//                else if(choose_workout == "Medium"){
-//                    start_btn.setEnabled(false);
-//                    list_shake.setEnabled(false);
-//                    programon = true;
-                    //while (programon == true) {
-//                        step_count.setText(count + "Steps");
-//                        if (count >= 40) {
-//                            while (count > 40 && count < 101) {
-//                                LightOn();
-//                                LightOff();
-//                            }
-//                        }
-//                        else if (count == 45) {
-//                            mp = MediaPlayer.create(MainActivity.this, R.raw.chariots_of_fire);
-//                            mp.start();
-//                        }
-//                        else if (count >= 100){
-//                            Toast.makeText(getApplicationContext(), String.format("%d:%02d:%02d", hours, minutes, seconds), Toast.LENGTH_LONG).show();
-//                            disableAccelerometerListening();
-//                            mp.stop();
-//                            programon = false;
-//                            start_btn.setEnabled(true);
-//                            list_shake.setEnabled(true);
-//                        }
-                    //}
-//                }
-//                else if(choose_workout == "Hard"){
-//                    start_btn.setEnabled(false);
-//                    list_shake.setEnabled(false);
-//                    programon = true;
-//                    while (programon == true) {
-//                        step_count.setText(count + "Steps");
-//                        if (count == 40) {
-//                            while (count > 40 && count < 101) {
-//                                LightOn();
-//                                LightOff();
-//                            }
-//                        }
-//                        else if (count == 60) {
-//                            mp = MediaPlayer.create(MainActivity.this, R.raw.rocky);
-//                            mp.start();
-//                        }
-//                        else if (count >= 100){
-//                            Toast.makeText(getApplicationContext(), String.format("%d:%02d:%02d", hours, minutes, seconds), Toast.LENGTH_LONG).show();
-//                            disableAccelerometerListening();
-//                            mp.stop();
-//                            programon = false;
-//                            start_btn.setEnabled(true);
-//                            list_shake.setEnabled(true);
-//                        }
-//                    }
-                }
-           //}
+            }
         });
         stop_btn.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View view) {
+                stopmp();
                 disableAccelerometerListening();
                 LightOff();
-                mp.stop();
                 programon = false;
                 start_btn.setEnabled(true);
                 list_shake.setEnabled(true);
@@ -247,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
         programon = programstatus;
         String workouttype = savedInstanceState.getString("Workout");
         choose_workout = workouttype;
-        int timemillis = savedInstanceState.getInt("Millis");
+        long timemillis = savedInstanceState.getLong("Millis");
         millis = timemillis;
         int timeseconds = savedInstanceState.getInt("Seconds");
         seconds = timeseconds;
@@ -255,6 +181,16 @@ public class MainActivity extends AppCompatActivity {
         minutes = timeminutes;
         int timehours = savedInstanceState.getInt("Hours");
         hours = timehours;
+        long timestarttime = savedInstanceState.getLong("Starttime");
+        startTime = timestarttime;
+        long timeendtime = savedInstanceState.getLong("Endtime");
+        endTime = timeendtime;
+    }
+
+    @Override
+    protected void onResume() {
+        enableAccelerometerListening();
+        super.onResume();
     }
 
     @Override
@@ -267,13 +203,20 @@ public class MainActivity extends AppCompatActivity {
         outState.putInt("Seconds", seconds);
         outState.putInt("Minutes", minutes);
         outState.putInt("Hours", hours);
+        outState.putLong("Starttime",startTime);
+        outState.putLong("Endtime",endTime);
     }
 
+    @Override
+    protected void onPause() {
+        enableAccelerometerListening();
+        super.onPause();
+    }
 
     @Override
     protected void onStop() {
         Log.i(TAG, "onStop Triggered.");
-        disableAccelerometerListening();
+        enableAccelerometerListening();
         super.onStop();
     }
 
@@ -342,25 +285,25 @@ public class MainActivity extends AppCompatActivity {
                     Log.e(TAG, "delta x = " + (x - lastX));
                     Log.e(TAG, "delta y = " + (y - lastY));
                     Log.e(TAG, "delta z = " + (z - lastZ));
-                    Toast.makeText(getBaseContext(), "SIGNIFICANT SHAKE!", Toast.LENGTH_SHORT).show();
 
                     count++;
                 }
-                step_count.setText(String.valueOf(count));
-                if (count == 20){
-                    while (count > 20 && count < 101) {
-                        LightOn();
-                        LightOff();
-                    }
+                step_count.setText(count + " Steps");
+                if (count >= 20){
+                    LightOn();
+                    LightOff();
+
                 }
-                else if (count == 30){
-                    mp = MediaPlayer.create(MainActivity.this, R.raw.superman);
+                if (count == 30){
                     mp.start();
                 }
-                else if (count >= 100){
-                    Toast.makeText(getApplicationContext(), String.format("%d:%02d:%02d", hours, minutes, seconds), Toast.LENGTH_LONG).show();
+                if (count == 100){
+                    endTime = System.currentTimeMillis();
+                    run();
+                    System.out.println(endTime);
+                    Toast.makeText(getApplicationContext(), String.format("%02d:%02d:%02d", hours, minutes, seconds), Toast.LENGTH_LONG).show();
                     disableAccelerometerListening();
-                    mp.stop();
+                    stopmp();
                     programon = false;
                     start_btn.setEnabled(true);
                     list_shake.setEnabled(true);
@@ -371,25 +314,25 @@ public class MainActivity extends AppCompatActivity {
                     Log.e(TAG, "delta x = " + (x - lastX));
                     Log.e(TAG, "delta y = " + (y - lastY));
                     Log.e(TAG, "delta z = " + (z - lastZ));
-                    Toast.makeText(getBaseContext(), "SIGNIFICANT SHAKE!", Toast.LENGTH_SHORT).show();
 
                     count++;
                 }
-                step_count.setText(count + "Steps");
+                step_count.setText(count + " Steps");
                 if (count >= 40) {
-                    while (count > 40 && count < 101) {
-                        LightOn();
-                        LightOff();
-                    }
+
+                    LightOn();
+                    LightOff();
+
                 }
-                else if (count == 45) {
-                    mp = MediaPlayer.create(MainActivity.this, R.raw.chariots_of_fire);
+                if (count == 45) {
                     mp.start();
                 }
-                else if (count >= 100){
-                    Toast.makeText(getApplicationContext(), String.format("%d:%02d:%02d", hours, minutes, seconds), Toast.LENGTH_LONG).show();
+                if (count == 100){
+                    endTime = System.currentTimeMillis();
+                    run();
+                    Toast.makeText(getApplicationContext(), String.format("%02d:%02d:%02d", hours, minutes, seconds), Toast.LENGTH_LONG).show();
                     disableAccelerometerListening();
-                    mp.stop();
+                    stopmp();
                     programon = false;
                     start_btn.setEnabled(true);
                     list_shake.setEnabled(true);
@@ -400,29 +343,31 @@ public class MainActivity extends AppCompatActivity {
                     Log.e(TAG, "delta x = " + (x - lastX));
                     Log.e(TAG, "delta y = " + (y - lastY));
                     Log.e(TAG, "delta z = " + (z - lastZ));
-                    Toast.makeText(getBaseContext(), "SIGNIFICANT SHAKE!", Toast.LENGTH_SHORT).show();
 
                     count++;
                 }
+                step_count.setText(count + " Steps");
                 if (count == 40) {
-                    while (count > 40 && count < 101) {
-                        LightOn();
-                        LightOff();
-                    }
-                } else if (count == 60) {
-                    mp = MediaPlayer.create(MainActivity.this, R.raw.rocky);
+
+                    LightOn();
+                    LightOff();
+
+                }
+                if (count == 60) {
                     mp.start();
-                } else if (count >= 100) {
-                    Toast.makeText(getApplicationContext(), String.format("%d:%02d:%02d", hours, minutes, seconds), Toast.LENGTH_LONG).show();
+                }
+                if (count == 100) {
+                    endTime = System.currentTimeMillis();
+                    run();
+                    Toast.makeText(getApplicationContext(), String.format("%02d:%02d:%02d", hours, minutes, seconds), Toast.LENGTH_LONG).show();
                     disableAccelerometerListening();
-                    mp.stop();
+                    stopmp();
                     programon = false;
                     start_btn.setEnabled(true);
                     list_shake.setEnabled(true);
                 }
             }
             else
-//                    Toast.makeText(getBaseContext(), "NOT A SIGNIFICANT SHAKE!", Toast.LENGTH_LONG).show();
 
             lastX = x;
             lastY = y;
@@ -435,64 +380,32 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-
-    //MENU STUFF, SAVE FOR NEXT WEEK
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.main_menu, menu);
-//        return super.onCreateOptionsMenu(menu);
-//    }
-//
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//
-//        int id =  item.getItemId();
-//
-//        if(id == R.id.call_your_mom_menuitem){
-//            Toast.makeText(getBaseContext(), "Ring, ring, ring...", Toast.LENGTH_LONG).show();
-//            return true;
-//        } else if (id == R.id.happy_menuitem){
-//            Toast.makeText(getBaseContext(), "I am a Happy Camper!", Toast.LENGTH_LONG).show();
-//            return true;
-//        } else if (id == R.id.Lets_Goto_Aruba) {
-//            Toast.makeText(getBaseContext(), "It's always Sunny in Aruba.", Toast.LENGTH_LONG).show();
-//            return true;
-//        }
-//
-//
-//        return super.onOptionsItemSelected(item);
-//    }
-
-    ////Menu Inflation and Binding
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.main_menu, menu);
-//        return true;
-//    }
-//
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//
-//        int id = item.getItemId();
-//
-//        if (id == R.id.call_your_mom_menuitem) {
-//            Toast.makeText(getBaseContext(), "Ring ring, Hi Mom.", Toast.LENGTH_LONG).show();
-//            return true;
-//        } else if (id == R.id.happy_menuitem){
-//            Toast.makeText(getBaseContext(), "You clicked the happy camper icon", Toast.LENGTH_LONG).show();
-//            return true;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
     private void run () {
-        millis = System.currentTimeMillis() - 0;
+
+        millis = endTime - startTime;
+        System.out.println(millis);
         seconds = (int) (millis / 1000);
         minutes = seconds / 60;
         hours = minutes / 60;
         seconds = seconds % 60;
         minutes = minutes % 60;
+        hours = hours % 60;
     }
+
+    private void stopmp() {
+        try {
+            if (mp != null) {
+                if (mp.isPlaying())
+                    mp.stop();
+                mp.reset();
+                mp.release();
+                mp = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void LightOn()
