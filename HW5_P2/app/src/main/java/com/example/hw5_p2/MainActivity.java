@@ -11,6 +11,9 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
 import android.util.Log;
+import android.view.View;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
@@ -24,11 +27,13 @@ public class MainActivity extends AppCompatActivity{
     private float acceleration;
     private float currentAcceleration;
     private float lastAcceleration;
+    //webview
+    private WebView wv1;
 
     private SeekBar seekBar;
 
     // value used to determine whether user shook the device "significantly"
-    private static int SIGNIFICANT_SHAKE = 10;   //tweak this as necessary
+    private static int SIGNIFICANT_SHAKE = 50;   //tweak this as necessary
     private CameraManager CamManager;
     private String CamID;
     private DecimalFormat df;
@@ -37,6 +42,14 @@ public class MainActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //webview
+        wv1=(WebView)findViewById(R.id.webview);
+        wv1.setWebViewClient(new MyBrowser());
+
+        wv1.getSettings().setLoadsImagesAutomatically(true);
+        wv1.getSettings().setJavaScriptEnabled(true);
+        wv1.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
 
         df = new DecimalFormat("0.00");
 
@@ -64,6 +77,14 @@ public class MainActivity extends AppCompatActivity{
 
             }
         });
+    }
+
+    private class MyBrowser extends WebViewClient {
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            view.loadUrl(url);
+            return true;
+        }
     }
 
     @Override
@@ -141,10 +162,29 @@ public class MainActivity extends AppCompatActivity{
 
             // if the acceleration is above a certain threshold
             if (acceleration > SIGNIFICANT_SHAKE) {
-                Log.i(TAG, "delta x = " + (x-lastX));
-                Log.i(TAG, "delta y = " + (y-lastY));
-                Log.i(TAG, "delta z = " + (z-lastZ));
+                Log.i(TAG, "delta x = " + (x - lastX));
+                Log.i(TAG, "delta y = " + (y - lastY));
+                Log.i(TAG, "delta z = " + (z - lastZ));
                 Toast.makeText(getBaseContext(), "SIGNIFICANT SHAKE!", Toast.LENGTH_SHORT).show();
+                float deltax = x - lastX;
+                float deltay = y - lastY;
+                float deltaz = z - lastZ;
+                float maxmov = deltax * deltax + deltay * deltay + deltaz * deltaz;
+                if (maxmov > SIGNIFICANT_SHAKE + 25) {
+                    wv1.loadUrl("https://jumpingjaxfitness.files.wordpress.com/2010/07/dizziness.jpg");
+                }
+                else {
+                    if (deltax > deltay && deltax > deltaz) {
+                        wv1.loadUrl("https://www.ecosia.org/");
+                    }
+                    if (deltay > deltax && deltay > deltaz) {
+                        wv1.loadUrl("https://www.dogpile.com/");
+                    }
+                    if (deltaz > deltax && deltaz > deltay) {
+                        wv1.loadUrl("https://buzzsumo.com/");
+                    }
+
+                }
             }
 
             lastX = x;
