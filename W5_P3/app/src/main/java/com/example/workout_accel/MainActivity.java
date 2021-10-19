@@ -8,6 +8,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private float currentAcceleration;
     private float lastAcceleration;
 
+    //Components in XML
     private ListView list_shake;
     private Button start_btn;
     private Button stop_btn;
@@ -61,9 +63,10 @@ public class MainActivity extends AppCompatActivity {
     private DecimalFormat df;
 
     private String choose_workout;
-    private int count = 0;
+    private int count;
     boolean programon = false;
 
+    //variables for timer
     long millis;
     int seconds;
     int minutes;
@@ -78,7 +81,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Locks screen in portrait mode
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         disableAccelerometerListening();
+
         start_btn = (Button) findViewById(R.id.start_btn);
         stop_btn = (Button) findViewById(R.id.stop_btn);
         step_count = (TextView) findViewById(R.id.step_count);
@@ -102,15 +109,20 @@ public class MainActivity extends AppCompatActivity {
                 String getworkout;
 
                 getworkout = String.valueOf(parent.getItemAtPosition(position));  //Parent refers to the parent of the item, the ListView.  position is the index of the item clicked.
+
+                //If statement of possible workouts
                 if (getworkout == "Easy") {
-                    choose_workout = getworkout;
-                    mp = MediaPlayer.create(MainActivity.this, R.raw.superman);
+                    choose_workout = getworkout; //choose_workout is a global variable
+                    mp = MediaPlayer.create(MainActivity.this, R.raw.superman); //prevents mp from being set to null
+                    disableAccelerometerListening();
                 } else if (getworkout == "Medium") {
                     choose_workout = getworkout;
-                    mp = MediaPlayer.create(MainActivity.this, R.raw.chariots_of_fire);
+                    mp = MediaPlayer.create(MainActivity.this, R.raw.chariots_of_fire); //prevents mp from being set to null
+                    disableAccelerometerListening();
                 } else if (getworkout == "Hard") {
                     choose_workout = getworkout;
-                    mp = MediaPlayer.create(MainActivity.this, R.raw.rocky);
+                    mp = MediaPlayer.create(MainActivity.this, R.raw.rocky); //prevents mp from being set to null
+                    disableAccelerometerListening();
                 }
 
 
@@ -130,19 +142,23 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        //Intializing the start button
         start_btn.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View view) {
                 count = 0;
-                startTime = System.currentTimeMillis();
-                System.out.println(startTime);
+                step_count.setText(count + " Steps");
+                startTime = System.currentTimeMillis(); //gets current time in millis
                 start_btn.setEnabled(false);
                 list_shake.setEnabled(false);
                 programon = true;
-                enableAccelerometerListening();
+                enableAccelerometerListening(); //enable the accelerometer to start listening
             }
         });
+
+        //Initializing the stop button to turn off all functions except for enabling the start button and listview
         stop_btn.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
@@ -164,6 +180,7 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG, "onStart Triggered.");
     }
 
+    //restores the necessary values to maintain the app
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
@@ -187,12 +204,14 @@ public class MainActivity extends AppCompatActivity {
         endTime = timeendtime;
     }
 
+
     @Override
     protected void onResume() {
         enableAccelerometerListening();
         super.onResume();
     }
 
+    //saves the necessary values
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -288,20 +307,22 @@ public class MainActivity extends AppCompatActivity {
 
                     count++;
                 }
+                //blinking flash turns on
                 step_count.setText(count + " Steps");
                 if (count >= 20){
                     LightOn();
                     LightOff();
-
                 }
+                //superman song plays
                 if (count == 30){
                     mp.start();
                 }
+                //stops the accelerometer at 100
                 if (count == 100){
                     endTime = System.currentTimeMillis();
                     run();
                     System.out.println(endTime);
-                    Toast.makeText(getApplicationContext(), String.format("%02d:%02d:%02d", hours, minutes, seconds), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), String.format("Time Elapsed: %02d:%02d:%02d", hours, minutes, seconds), Toast.LENGTH_LONG).show();
                     disableAccelerometerListening();
                     stopmp();
                     programon = false;
@@ -318,19 +339,23 @@ public class MainActivity extends AppCompatActivity {
                     count++;
                 }
                 step_count.setText(count + " Steps");
-                if (count >= 40) {
 
+                //blinking flash turns on
+                if (count >= 40) {
                     LightOn();
                     LightOff();
-
                 }
+
+                //chariots of fire music plays
                 if (count == 45) {
                     mp.start();
                 }
+
+                //stops the accelerometer at 100
                 if (count == 100){
                     endTime = System.currentTimeMillis();
                     run();
-                    Toast.makeText(getApplicationContext(), String.format("%02d:%02d:%02d", hours, minutes, seconds), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), String.format("Time Elapsed: %02d:%02d:%02d", hours, minutes, seconds), Toast.LENGTH_LONG).show();
                     disableAccelerometerListening();
                     stopmp();
                     programon = false;
@@ -347,19 +372,23 @@ public class MainActivity extends AppCompatActivity {
                     count++;
                 }
                 step_count.setText(count + " Steps");
-                if (count == 40) {
 
+                //blinking flash turns on
+                if (count >= 40) {
                     LightOn();
                     LightOff();
-
                 }
+
+                //rocky song plays
                 if (count == 60) {
                     mp.start();
                 }
+
+                //stops the accelerometer at 100
                 if (count == 100) {
                     endTime = System.currentTimeMillis();
                     run();
-                    Toast.makeText(getApplicationContext(), String.format("%02d:%02d:%02d", hours, minutes, seconds), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), String.format("Time Elapsed: %02d:%02d:%02d", hours, minutes, seconds), Toast.LENGTH_LONG).show();
                     disableAccelerometerListening();
                     stopmp();
                     programon = false;
@@ -380,8 +409,8 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    //function to calculate the time elapsed
     private void run () {
-
         millis = endTime - startTime;
         System.out.println(millis);
         seconds = (int) (millis / 1000);
@@ -392,6 +421,7 @@ public class MainActivity extends AppCompatActivity {
         hours = hours % 60;
     }
 
+    //function to stop music player
     private void stopmp() {
         try {
             if (mp != null) {
@@ -406,7 +436,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
+    //turns flash on
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void LightOn()
     {
@@ -417,6 +447,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //turns flash off
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void LightOff()
     {
