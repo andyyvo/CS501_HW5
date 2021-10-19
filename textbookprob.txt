@@ -17,8 +17,8 @@ protected void onCreate( Bundle savedInstanceState ){
   // Your code goes here
 
    setContentView(R.layout.activity_main);
-   detector = new GestureDetecter(this, this);
-   detector.setOnDoubleTapListener(this);
+   GestureDetector GD = new GestureDetecter(this, this);
+   GD.setOnDoubleTapListener(this);
 
 }
 
@@ -27,7 +27,7 @@ protected void onCreate( Bundle savedInstanceState ){
 		 	 	 							
 public boolean onTouchEvent( MotionEven event ){			
  // Your code goes here
-   this.detector.onTouchEvent(event);
+   this.GD.onTouchEvent(event);
    return super.onTouchEvent(event);
 }
 
